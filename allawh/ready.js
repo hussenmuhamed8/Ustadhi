@@ -83,8 +83,8 @@ export async function viewReady(books, gradeKey, gradeName) {
   const ed = examDate(gradeKey), dl = daysLeft(ed), sk = streak(books), xp = totalXP(books);
   const weakest = [...ps].filter((p) => p.next || !p.started).sort((a, b) => (a.started - b.started) || (a.pct - b.pct))[0];
   const plan = !started.length
-    ? `<p>لم تبدأ أي مادة بعد. ابدأ بالمادة التي تخشاها أكثر، فالفصل الأول من كل كتاب مجاني.</p>`
-    : weakest && !weakest.started ? `<p>لم تبدأ <b>${esc(weakest.title)}</b> بعد. افتح فصلها الأول المجاني اليوم، فالبداية المبكرة تخفف ضغط الأسابيع الأخيرة.</p><a class="btn go" href="${weakest.url}">ابدأ ${esc(weakest.title)} ‹</a>`
+    ? `<p>لم تبدأ أي مادة بعد. ابدأ بالمادة التي تخشاها أكثر، واختر من المحتوى المتاح في موقع الكتاب.</p>`
+    : weakest && !weakest.started ? `<p>لم تبدأ <b>${esc(weakest.title)}</b> بعد. ابدأ بالمحتوى المتاح منها اليوم، فالبداية المبكرة تخفف ضغط الأسابيع الأخيرة.</p><a class="btn go" href="${weakest.url}">ابدأ ${esc(weakest.title)} ‹</a>`
     : weakest ? `<p>أضعف مادة عندك الآن: <b>${esc(weakest.title)}</b> (${ar(weakest.pct)}%).${weakest.next ? ` ابدأ اليوم بـ«${esc(weakest.next.title)}»، ثم أدِّ تحدّيه.` : ''}</p>
       <a class="btn go" href="${weakest.next ? weakest.next.url : weakest.url}">ابدأ خطة اليوم ‹</a>` : '<p>اجتزت كل الفصول. تدرّب الآن على الامتحانات الكاملة في كل مختبر.</p>';
   return `<nav class="crumbs"><a href="#/">الرئيسة</a> › <a href="#/grade/${gradeKey.replace('-', '/')}">${esc(gradeName)}</a> › <span>جاهزيتي للوزاري</span></nav>

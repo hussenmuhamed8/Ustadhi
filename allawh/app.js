@@ -1,8 +1,6 @@
 import { STAGES, SUBJECTS, BRANCHES, GRADE1_PROGRESS_KEYS, WHATSAPP } from './data/catalog.js';
 import { ART, kind } from './data/covers.js';
 import { viewCoverageAll, viewCoverage } from './coverage.js';
-import { hasAccess, askCode, logout, myKeys, myScoped, prettyCode, GRADE_NAMES, FREE } from './access.js';
-import { hit, online } from './stats.js';
 import { touchDay, readyTeaser, paintTeaser, viewReady, wireReady, viewCert, drawCert, installBtnHTML, wireInstall, exportProgress, importProgress } from './ready.js';
 
 const $ = (s) => document.querySelector(s);
@@ -50,11 +48,7 @@ function openProfile() {
   let pick = profile ? profile.av : -1;
   $('#pname').value = profile ? profile.name : '';
   $('#preset').hidden = !profile;
-  const keys = Object.entries(myKeys());
-  const sc = Object.entries(myScoped());
-  const SK = { book: 'مادة', chapter: 'فصل', lesson: 'درس', grade: 'صف' };
-  $('#psubs').innerHTML = (keys.length ? '<b>الصفوف المفتوحة على هذا الجهاز:</b> ' + keys.map(([g, k]) => `${GRADE_NAMES[g] || g} <code dir="ltr">${prettyCode(k.code).slice(0, 4)}-…</code>`).join('، ') : '')
-    + (sc.length ? '<br><b>مشتريات أخرى:</b> ' + sc.map(([c, v]) => `${SK[String(v.scope).split(':')[0]] || ''} <code dir="ltr">${String(v.scope).split(':').slice(1).join(' ').replace(/[<>&]/g, '')}</code>`).join('، ') : '');
+  $('#psubs').textContent = 'البوابة مجانية، ولا تحتاج إلى حساب أو رمز تفعيل.';
   const avs = $('#avs');
   avs.innerHTML = AVATARS.map((a, i) => `<button type="button" class="av" style="--b:${a[1]}" data-i="${i}" aria-pressed="${i === pick}" aria-label="صورة ${i + 1}">${a[0]}</button>`).join('');
   const check = () => { $('#pgo').disabled = !($('#pname').value.trim() && pick >= 0); };
@@ -94,7 +88,6 @@ function viewHome() {
     ${installBtnHTML()}
     <h1>اختر مرحلتك الدراسية</h1>
     <p class="lead">كتب المنهج العراقي دروسًا تفاعلية واختبارات، من الأول الابتدائي إلى السادس الإعدادي.</p>
-    <div class="live"><span class="lv"><i class="dot"></i> المتصلون الآن: <b id="stOn">…</b></span><span class="lv" id="stTotWrap" hidden>👁️ الزيارات الكلية للوح المحاور: <b id="stTot"></b></span></div>
     <div class="grid" style="--min:280px;--h:220px">
       ${STAGES.map((s) => `
         <a class="tile" href="#/${s.id}" style="--c:${s.color}">
@@ -112,7 +105,6 @@ function viewStage(sid) {
     <h1>${sid === 'primary' && profile ? `أهلاً ${esc(profile.name)}، ` : ''}المرحلة ${s.name}</h1>
     ${sid === 'primary' && !profile ? '<div class="hello"><span>👋 اكتب اسمك واختر صورتك لتُحفظ نجومك وشهاداتك باسمك.</span><button class="btn go" type="button" id="helloBtn">اختر اسمك</button></div>' : ''}
     <p class="lead">اختر صفّك.</p>
-    <div class="live"><span class="lv" id="stPgWrap" hidden>👁️ زيارات صفحة المرحلة ${s.name}: <b id="stPg"></b></span><span class="lv" id="stTotWrap" hidden>الزيارات الكلية: <b id="stTot"></b></span></div>
     <div class="grid" style="--min:220px">
       ${s.grades.map((g, i) => {
         const books = g.books || Object.values(g.branches).flatMap((x) => x.books);
@@ -165,16 +157,15 @@ function viewGrade(gid, br) {
   if (br) path.push([g.name, '#/branch/' + g.id]);
   path.push([br ? 'الفرع ' + BRANCHES[br] : g.name]);
   const playful = (g.style || s.style) === 'play';
-  // المرحلة الابتدائية كلها مجانية: كل الكتب وكل الفصول، بلا كلمة سر (قرار 20 تشرين الثاني 2026)
-  const allFree = s.id === 'primary';
+
   return `${crumbs(path)}
     <h1>كتب ${esc(name)}</h1>
-    <p class="lead">${playful ? 'دروس على شكل مراحل وألعاب، وكل لعبة تمنحك نجمة.' : 'دروس وتجارب واختبار في نهاية كل فصل. كل الفصول مفتوحة للتصفح، ونقترح عليك ترتيباً للدراسة ولا نفرضه.'}${allFree ? ' كل الكتب وكل الفصول في هذا الصف مجانية بالكامل.' : (playful ? '' : ' والفصل الأول من كل كتاب مجاني بالكامل.')}${g.exit ? ' وفي هذا الصف أسئلة على نمط الامتحان الوزاري.' : ''}</p>
-    ${allFree ? '<div class="sub on"><span>✓ كل كتب هذا الصف مجانية بالكامل، ولا تحتاج إلى كلمة سر.</span></div>' : `<div class="sub" id="sub" data-grade="${br ? g.id + '-' + br : g.id}"></div>`}
+    <p class="lead">${playful ? 'دروس على شكل مراحل وألعاب، وكل لعبة تمنحك نجمة.' : 'دروس وتجارب واختبار في نهاية كل فصل. كل الفصول مفتوحة للتصفح، ونقترح عليك ترتيباً للدراسة ولا نفرضه.'}${g.exit ? ' وفي هذا الصف أسئلة على نمط الامتحان الوزاري.' : ''}</p>
+    <div class="sub on"><span>البوابة مجانية دون اشتراك. الكتب تُفتح على مواقع خارجية وقد تكون لها شروط وصول خاصة بها.</span></div>
     ${node.draft ? '<div class="note">قائمة الكتب في هذا الصف مسودة أولى، وستُراجَع على طبعة 2026.</div>' : ''}
     ${g.exit && br ? readyTeaser(g.id + '-' + br) : ''}
     ${g.exit ? '<p class="guide">📋 <a href="#/coverage">ما المتوفر من الأسئلة الوزارية في كل مادة، وما ينقص منها، ونوع كل جواب</a></p>' : ''}
-    ${node.books.some((b) => b.kd) ? '<p class="guide">💡 في المواد العلمية كتابان: <b>«تفاعلي»</b> بمجسمات ثلاثية الأبعاد، و<b>«مشروح»</b> بشرح مبسّط وأسئلة واختبارات. الفصل الأول من كل كتاب مجاني بالكامل.</p>' : ''}
+    ${node.books.some((b) => b.kd) ? '<p class="guide">💡 في المواد العلمية كتابان: <b>«تفاعلي»</b> بمجسمات ثلاثية الأبعاد، و<b>«مشروح»</b> بشرح مبسّط وأسئلة واختبارات.</p>' : ''}
     ${node.books.some((b) => b.variants && !b.kd) ? '<p class="guide">💡 في المواد العلمية كتابان: ابدأ بـ<b>«افهم»</b> لترى الفكرة بمجسمات ثلاثية الأبعاد، ثم انتقل إلى <b>«تدرّب»</b> للتمارين والأسئلة الوزارية.</p>' : ''}
     <div class="grid shelf">${node.books.map((b) => cover(b, name)).join('')}</div>`;
 }
@@ -191,9 +182,7 @@ function viewAbout() {
       <p class="st plan">قيد التنفيذ: عرض تاريخ آخر مراجعة ورقم الطبعة المعتمدة لكل كتاب، وتوضيح المواد التي لم تكتمل مطابقتها بعد. يذكر كل كتاب اليوم طبعته في تذييله.</p>
       <p class="st">المنصة عمل مستقل، ولا تمثّل وزارة التربية ولا تتحدث باسمها.</p></section>
     <section><h2>التعليم المجاني</h2>
-      <p>جميع المواد التعليمية للمرحلة الابتدائية كلها، من الأول إلى السادس الابتدائي، مجانية بالكامل: كل الكتب وكل الفصول، بما فيها التمارين والاختبارات والأنشطة التفاعلية.</p>
-      <p>أما المرحلتان المتوسطة والإعدادية، فتُتاح موادهما بأسعار رمزية تختلف حسب الصف والمادة والدرس.</p>
-      <p>ويكون الفصل الأول من كل كتاب فيهما مجانيًا بالكامل، بدروسه وأنشطته واختباره.</p></section>
+      <p>جميع أدوات هذه البوابة متاحة مجانًا، دون اشتراك أو رموز تفعيل أو دفع.</p><p>روابط الكتب تقود إلى مواقع خارجية مستقلة؛ إتاحتها ومحتواها وشروط الوصول إليها تحددها تلك المواقع.</p></section>
     <section><h2>الأسئلة الوزارية</h2>
       <p>تعمل المنصة على جمع الأسئلة الوزارية للصفوف المنتهية، وهي السادس الابتدائي والثالث المتوسط والسادس الإعدادي بفروعه، وتنظيمها بحسب السنة والمادة والدور والموضوع.</p>
       <p>تشمل خطة الأرشفة السنوات العشر الأخيرة، والامتحانات التمهيدية، والدور الأول والثاني والثالث حيثما أُجريت رسميًا.</p>
@@ -210,7 +199,7 @@ function viewAbout() {
       <p>نسعى إلى جعل التعلم أكثر وضوحًا ومتعة وتفاعلًا، وإتاحة أدوات تعليمية حديثة للطالب العراقي، مع العناية بالدقة العلمية ومطابقة المنهج الرسمي وتكافؤ فرص الوصول إلى التعليم.</p></section>
     <section><h2>الكتب المتاحة الآن</h2>
       <ul><li>الأول الابتدائي: الكتب الستة، مجانية بالكامل.</li><li>الخامس العلمي: الفيزياء والكيمياء.</li><li>السادس العلمي: العربية، الإسلامية، الإنجليزية، الرياضيات، الفيزياء، الكيمياء، الأحياء.</li><li>السادس الأدبي: العربية، الإسلامية، الإنجليزية، الرياضيات، التاريخ، الجغرافية، الاقتصاد.</li><li>بقية الصفوف تُضاف تباعًا.</li></ul></section>
-    <p class="st">للملاحظات والاشتراك: <a target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}">واتساب</a></p>
+    <p class="st">للملاحظات: <a target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}">واتساب</a></p>
   </article>`;
 }
 
@@ -233,51 +222,11 @@ function route() {
   app.innerHTML = html;
   window.scrollTo(0, 0);
   paintMe();
-  paintSub();
   wireInstall(); drawCert();
   const hb = document.getElementById('helloBtn'); if (hb) hb.onclick = openProfile;
   if (p[0] === 'grade') { const node = gradeNode(p[1] + (p[2] ? '-' + p[2] : '')); if (node && document.getElementById('readyT')) paintTeaser(node.books, p[1] + '-' + p[2]); }
 }
 
-async function paintSub() {
-  const box = document.getElementById('sub'); if (!box) return;
-  const grade = box.dataset.grade;
-  const open = await hasAccess(grade);
-  if (open) {
-    box.className = 'sub on';
-    box.innerHTML = `<span>✓ كتب هذا الصف مفتوحة كلها على هذا الجهاز.</span> <button type="button" id="subOut">تسجيل الخروج من كلمة السر</button>`;
-    box.querySelector('#subOut').onclick = async () => {
-      if (!confirm('بعد تسجيل الخروج تستطيع استعمال كلمة السر في جهاز آخر. هل تريد المتابعة؟')) return;
-      const r = await logout(grade);
-      if (!r.ok) alert(r.msg); paintSub();
-    };
-  } else {
-    box.className = 'sub';
-    box.innerHTML = `<span>الفصل الأول من كل كتاب مجاني بالكامل.</span> <button type="button" id="subIn">عندي كلمة سر</button>`;
-    box.querySelector('#subIn').onclick = async () => { await askCode(grade, { voluntary: true }); paintSub(); };
-  }
-}
-
-const STATS = { total: null, on: null, page: null };
-function paintStats() {
-  const on = document.getElementById('stOn'), tw = document.getElementById('stTotWrap'), t = document.getElementById('stTot');
-  const pw = document.getElementById('stPgWrap'), pg = document.getElementById('stPg');
-  if (on) on.textContent = STATS.on == null ? '…' : STATS.on.toLocaleString('ar-IQ');
-  if (tw) { tw.hidden = STATS.total == null; if (t && STATS.total != null) t.textContent = Number(STATS.total).toLocaleString('ar-IQ'); }
-  if (pw) { pw.hidden = STATS.page == null; if (pg && STATS.page != null) pg.textContent = Number(STATS.page).toLocaleString('ar-IQ'); }
-}
-// كل فتح لصفحة يُحسب ولو تكرر من الشخص نفسه: الواجهة تُحسب «hub»، وصفحة كل مرحلة تُحسب باسمها
-function countVisit() {
-  const p = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
-  const key = !p.length ? 'hub' : findStage(p[0]) ? 'stage:' + p[0] : null;
-  STATS.page = null;
-  if (!key) return;
-  hit(key).then((r) => { if (!r) return; STATS.total = r.total; STATS.page = key === 'hub' ? null : r.page; paintStats(); });
-}
-countVisit();
-addEventListener('hashchange', countVisit);
-online('hub', (n) => { STATS.on = n; paintStats(); });
-addEventListener('hashchange', () => setTimeout(paintStats, 0));
 addEventListener('hashchange', route);
 addEventListener('pageshow', paintMe);
 $('#wa').href = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent('ملاحظة على منصة اللوح المحاور: ');
