@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1b2a4a">
+<title>اللوح المحاور — منصة الكتب المدرسية التفاعلية</title>
+<meta name="description" content="اللوح المحاور: منصة مجانية تحوّل كتب المنهج العراقي من الأول الابتدائي إلى السادس الإعدادي إلى كتب تفاعلية فيها دروس وألعاب واختبارات.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+@font-face{font-family:'Naskh';src:url(fonts/noto-naskh-arabic-arabic-500-normal.woff2) format('woff2');font-weight:400 500;font-display:swap}
+@font-face{font-family:'Naskh';src:url(fonts/noto-naskh-arabic-arabic-700-normal.woff2) format('woff2');font-weight:600 800;font-display:swap}
+@font-face{font-family:'Amiri';src:url(fonts/amiri-arabic-700-normal.woff2) format('woff2');font-weight:700;font-display:swap}
+:root{--ink:#1b2a4a;--paper:#f7f4ec;--card:#fff;--muted:#6b7385;--gold:#f2b632;--line:#e4dfd2;--r:22px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font-family:'Naskh',serif;color:var(--ink);background:var(--paper);min-height:100vh;line-height:1.8;
+  background-image:radial-gradient(circle at 1px 1px,rgba(27,42,74,.07) 1px,transparent 0);background-size:22px 22px}
+button{font-family:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+[hidden]{display:none!important}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:10px max(16px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left));
+  background:rgba(27,42,74,.96);color:#fff;backdrop-filter:blur(8px)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
+.brand svg{width:40px;height:40px}
+.brand b{font-family:'Amiri',serif;font-size:26px;line-height:1}
+.brand small{display:block;font-size:12px;opacity:.75;line-height:1.4}
+.sp{flex:1}
+.me{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:0;border-radius:40px;padding:4px 6px 4px 14px;font-size:15px}
+.me .av{width:36px;height:36px;font-size:22px}
+.stars{color:var(--gold);font-weight:700}
+main{max-width:1100px;margin:0 auto;padding:18px 16px 60px}
+.crumbs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:15px;color:var(--muted);margin:4px 0 14px}
+.crumbs a{text-decoration:none;background:#fff;border:1px solid var(--line);padding:2px 12px;border-radius:30px}
+h1{font-family:'Amiri',serif;font-size:clamp(28px,5vw,44px);margin:6px 0 4px;line-height:1.4}
+.lead{color:var(--muted);font-size:17px;margin:0 0 22px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(var(--min,240px),1fr))}
+.tile{text-decoration:none;position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:var(--h,190px);padding:20px;border:0;border-radius:var(--r);text-align:right;
+  color:#fff;background:var(--c);overflow:hidden;box-shadow:0 6px 0 color-mix(in srgb,var(--c) 70%,#000),0 14px 30px rgba(27,42,74,.15);transition:transform .15s}
+.tile:hover{transform:translateY(-3px)}
+.tile:active{transform:translateY(3px);box-shadow:0 2px 0 color-mix(in srgb,var(--c) 70%,#000)}
+.tile .big{position:absolute;inset-inline-start:-6px;top:-30px;font-family:'Amiri',serif;font-size:150px;opacity:.16;line-height:1}
+.tile b{font-size:clamp(24px,3.6vw,32px);line-height:1.3}
+.tile span{opacity:.9;font-size:15px}
+.badge{position:absolute;top:14px;inset-inline-end:14px;background:rgba(255,255,255,.95);color:var(--ink);font-size:13px;font-weight:700;padding:2px 10px;border-radius:20px}
+.badge.exit{background:var(--gold)}
+.note{background:#fff8e1;border:1px dashed #e0b84d;border-radius:14px;padding:10px 14px;font-size:14px;color:#6b5414;margin:0 0 18px}
+/* الإحصاءات الحية */
+.live{display:flex;flex-wrap:wrap;gap:10px;margin:-10px 0 20px}
+.lv{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:30px;padding:4px 14px;font-size:15px}
+.lv b{font-size:17px}
+.dot{width:10px;height:10px;border-radius:50%;background:#2b8a3e;box-shadow:0 0 0 0 rgba(43,138,62,.6);animation:ping 1.6s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 10px rgba(43,138,62,0)}100%{box-shadow:0 0 0 0 rgba(43,138,62,0)}}
+/* الاشتراك */
+.sub{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px 14px;margin:0 0 16px;font-size:15px}
+.sub:empty{display:none}
+.sub.on{background:#ebfbee;border-color:#b2f2bb;color:#2b8a3e}
+.sub button{border:0;border-radius:12px;padding:4px 14px;font-weight:700;background:var(--ink);color:#fff;font-size:14px}
+.sub.on button{background:#fff;color:#c92a2a;border:1px solid #ffc9c9}
+/* الأغلفة */
+.shelf{--min:170px}
+.book{display:block;text-decoration:none;border:0;padding:0;background:none;text-align:center;color:var(--ink)}
+.cover{position:relative;aspect-ratio:3/4.2;border-radius:6px 16px 16px 6px;color:#fff;overflow:hidden;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--c) 62%,#fff) 0%,var(--c) 48%,color-mix(in srgb,var(--c) 62%,#000) 100%);
+  box-shadow:inset 10px 0 0 rgba(0,0,0,.2),inset 13px 0 0 rgba(255,255,255,.22),0 12px 26px rgba(27,42,74,.25);transition:transform .25s}
+.book:hover .cover{transform:translateY(-6px) rotate(-1deg)}
+.cover::before{content:"";position:absolute;inset:0;opacity:.9;background-size:34px 34px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 34'%3E%3Cpath d='M17 4l3.8 9.2L30 17l-9.2 3.8L17 30l-3.8-9.2L4 17l9.2-3.8z' fill='none' stroke='rgba(255,255,255,.12)' stroke-width='1.2'/%3E%3C/svg%3E")}
+.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.22) 0%,transparent 32%);pointer-events:none}
+.cover .halo{position:absolute;top:13%;left:50%;width:62%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.28) 0%,rgba(255,255,255,.08) 55%,transparent 70%)}
+.cover .art{position:absolute;top:16%;left:50%;width:52%;transform:translateX(-50%);filter:drop-shadow(0 4px 3px rgba(0,0,0,.22));transition:transform .35s}
+.book:hover .cover .art{transform:translateX(-50%) scale(1.06)}
+.cover.pop .art{filter:drop-shadow(5px 9px 0 rgba(0,0,0,.25));transform:translateX(-50%) perspective(300px) rotateY(-14deg) rotateX(8deg)}
+.book:hover .cover.pop .art{transform:translateX(-50%) perspective(300px) rotateY(-4deg) rotateX(2deg) scale(1.08)}
+.cover .mk{position:absolute;top:18%;left:0;right:0;font-family:'Amiri',serif;font-size:72px;line-height:1;text-shadow:0 3px 0 rgba(0,0,0,.15)}
+.cover .kd{position:absolute;top:9px;right:9px;z-index:2;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px;background:rgba(255,255,255,.92);color:color-mix(in srgb,var(--c) 70%,#000)}
+.cover.pop .kd{background:#ffd43b;color:#5c3d00;box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.cover.lab .kd{background:rgba(0,0,0,.28);color:#fff;border:1px solid rgba(255,255,255,.5)}
+.cover .band{position:absolute;left:13px;right:0;bottom:0;padding:10px 12px 12px 8px;background:linear-gradient(0deg,rgba(0,0,0,.38),rgba(0,0,0,.12));border-top:2px solid rgba(255,255,255,.35)}
+.cover .ti{display:block;font-size:19px;font-weight:700;line-height:1.35;text-shadow:0 2px 3px rgba(0,0,0,.25)}
+.cover .gr{display:block;margin-top:3px;font-size:12.5px;opacity:.9}
+.book.soon .cover{filter:grayscale(.55) brightness(1.05);opacity:.75}
+.book .st{display:inline-block;margin-top:8px;font-size:14px;font-weight:700;padding:1px 12px;border-radius:20px;background:#d3f9d8;color:#2b8a3e}
+.book.soon .st{background:#eceae3;color:var(--muted)}
+/* نافذة الطالب */
+dialog{border:0;border-radius:26px;padding:0;max-width:560px;width:calc(100% - 28px);box-shadow:0 30px 80px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(27,42,74,.55)}
+.dlg{padding:24px}
+.dlg h2{font-family:'Amiri',serif;margin:0 0 6px;font-size:30px}
+.dlg input{width:100%;font:inherit;font-size:22px;padding:10px 16px;border:2px solid var(--line);border-radius:16px;margin:8px 0 14px;text-align:center}
+.dlg input:focus{outline:0;border-color:#1c7ed6}
+.avs{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.av{display:grid;place-items:center;aspect-ratio:1;border-radius:50%;font-size:30px;background:var(--b,#eef);border:3px solid transparent}
+.avs .av[aria-pressed=true]{border-color:var(--ink);transform:scale(1.08)}
+.go{width:100%;margin-top:18px;font-size:22px;font-weight:700;padding:12px;border:0;border-radius:18px;background:#2b8a3e;color:#fff;box-shadow:0 5px 0 #1e6b2f}
+.go:disabled{background:#adb5bd;box-shadow:0 5px 0 #868e96}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:14px;margin-top:10px}
+footer{text-align:center;color:var(--muted);font-size:14px;padding:20px 16px 40px}
+footer a{color:#1c7ed6}
+@media (max-width:520px){.grid{--min:150px!important;--h:150px!important;gap:12px}.tile{padding:14px}.tile .big{font-size:110px}.tile span{font-size:13px}.brand small{display:none}.me .nm{display:none}.shelf{--min:140px}.cover .mk{font-size:56px}.cover .ti{font-size:15.5px}.cover .kd{font-size:10px;padding:1px 7px}.cover .gr{font-size:11px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.abt{font-weight:700;text-decoration:none;color:inherit;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);margin-inline-end:8px}
+.about{max-width:820px;margin:0 auto;line-height:2}
+.about h2{margin:26px 0 6px;font-size:22px}
+.about .st{background:#f6f1e3;border-radius:12px;padding:10px 14px;font-size:15px}
+.about .st.plan{border-inline-start:4px solid #f2b632}
+.about .st.now{border-inline-start:4px solid #1c7ed6}
+
+/* بطاقة المادة ذات الكتابين */
+.book.two{display:flex;flex-direction:column;gap:8px}
+.book.two .cover{cursor:default}
+.vbtn{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.vbtn .v{display:flex;flex-direction:column;align-items:center;text-decoration:none;border-radius:14px;padding:6px 4px;line-height:1.35;box-shadow:0 3px 0 rgba(0,0,0,.18);transition:transform .15s}
+.vbtn .v:hover{transform:translateY(-2px)}
+.vbtn .v b{font-size:16px}.vbtn .v small{font-size:11px;opacity:.85}
+.vbtn .pop{background:#ffd43b;color:#5c3d00}.vbtn .lab{background:#1b2a4a;color:#fff}
+.cover.pair .kd{background:linear-gradient(90deg,#ffd43b,#fff);color:#5c3d00}
+.guide{background:#fff8e1;border:1px solid #ffe08a;border-radius:14px;padding:8px 14px;font-size:15px}
+/* الترحيب والتثبيت */
+.hello,.inst{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px 14px;margin:10px 0;box-shadow:0 4px 14px rgba(27,42,74,.06)}
+.hello span,.inst span{flex:1;min-width:200px}.inst small{width:100%;color:var(--muted)}
+.inst .x{border:0;background:none;font-size:22px;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:12px;padding:8px 16px;font:inherit;font-weight:700;text-decoration:none;background:#eceae3;color:var(--ink);cursor:pointer}
+.btn.go{background:#2b8a3e;color:#fff;box-shadow:0 3px 0 #1e6b2f;width:auto;margin-top:0;font-size:16px;padding:8px 16px;border-radius:12px}
+/* الجاهزية */
+.ready-t{display:flex;align-items:center;gap:14px;text-decoration:none;background:linear-gradient(90deg,#1b2a4a,#2d4a86);color:#fff;border-radius:18px;padding:14px 18px;margin:12px 0;box-shadow:0 10px 24px rgba(27,42,74,.25)}
+.ready-t .ic{font-size:36px}.ready-t b{display:block;font-size:20px}.ready-t small{opacity:.85;font-size:14px}.ready-t .arr{margin-inline-start:auto;font-size:26px}
+.rd-top{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0}
+.rd-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px}
+.rd-card .num{font-size:40px;font-weight:800;line-height:1.2}.rd-card small{color:var(--muted);font-size:13px}
+.rd-card .ring{width:120px}.rd-card.big{grid-row:span 1}
+.rd-card .ed{display:flex;flex-direction:column;align-items:center;margin-top:4px}.rd-card input{font:inherit;border:1px solid var(--line);border-radius:10px;padding:2px 8px}
+.rd-plan,.rd-list{background:#fff;border:1px solid var(--line);border-radius:18px;padding:6px 16px 14px;margin:12px 0}
+.rd-plan h2,.rd-list h2{font-size:20px;margin:10px 0 4px}
+.rd-row{display:grid;grid-template-columns:1fr 34% 48px;align-items:center;gap:10px;text-decoration:none;padding:8px 0;border-top:1px solid #f0ece1}
+.rd-row b{display:block}.rd-row small{color:var(--muted);font-size:12.5px;line-height:1.5;display:block}
+.rd-row .bar{height:12px;background:#eee8da;border-radius:99px;overflow:hidden}.rd-row .bar i{display:block;height:100%;border-radius:99px}
+.rd-row .pc{font-weight:800;text-align:left}
+/* الشهادة */
+.cert-wrap{max-width:480px;margin:0 auto}.cert-wrap canvas{width:100%;height:auto;border-radius:16px;box-shadow:0 14px 40px rgba(0,0,0,.25)}
+.cert-act{display:flex;gap:10px;justify-content:center;margin:14px 0}
+@media (max-width:520px){.rd-row{grid-template-columns:1fr 28% 42px}.vbtn .v small{display:none}}
+
+.cv-leg{display:flex;flex-direction:column;gap:4px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:14px;margin:10px 0}
+.cv-leg .k,.cv-row .k{display:inline-block}
+i.k{width:12px;height:12px;border-radius:3px;vertical-align:middle;margin-inline-end:6px}
+i.k.pap{background:#1c7ed6}i.k.bnk{background:#868e96}i.k.off{background:#2b8a3e}i.k.sol{background:#f08c00}
+.cv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:12px 0}
+.cv-card{display:flex;flex-direction:column;gap:2px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 14px;text-decoration:none;box-shadow:0 4px 12px rgba(27,42,74,.06)}
+.cv-card b{font-size:18px}.cv-card b small{font-weight:400;color:var(--muted);font-size:13px}.cv-card span{font-size:14px}.cv-card.dim{opacity:.6}
+.cv-note{font-size:14px;color:var(--muted);background:#f6f1e3;border-radius:12px;padding:8px 12px}
+.cv-gap{background:#fff4e6;border:1px solid #ffc078;border-radius:12px;padding:8px 12px;margin:10px 0}
+.cv-year h2{font-size:22px;margin:18px 0 6px;border-bottom:2px solid var(--line)}
+.cv-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed #eee6d4}
+.cv-row>b{min-width:140px}.cv-row .chips{display:flex;flex-wrap:wrap;gap:6px}
+.cv-row .k{font-size:13px;border-radius:999px;padding:1px 10px;text-decoration:none}
+.cv-row .k.pap{background:#e7f5ff;color:#1864ab}.cv-row .k.bnk{background:#f1f3f5;color:#495057}.cv-row .k.off{background:#ebfbee;color:#2b8a3e}.cv-row .k.sol{background:#fff4e6;color:#d9480f}.cv-row .k.miss{background:#fff5f5;color:#c92a2a}.cv-row .k.out{background:#f3f0ff;color:#5f3dc4}
+.cv-n{display:block;width:100%;color:var(--muted);font-size:12.5px}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="#/" aria-label="اللوح المحاور، الصفحة الرئيسة">
+    <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="6" width="32" height="26" rx="5" fill="#f2b632"/><rect x="8" y="10" width="24" height="18" rx="3" fill="#1b2a4a"/><path d="M13 16h14M13 21h9" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M26 30h14a4 4 0 0 1 4 4v6a4 4 0 0 1-4 4h-4l-5 4v-4h-5a4 4 0 0 1-4-4v-6a4 4 0 0 1 4-4z" fill="#4dabf7"/><circle cx="29" cy="37" r="1.6" fill="#fff"/><circle cx="34" cy="37" r="1.6" fill="#fff"/><circle cx="39" cy="37" r="1.6" fill="#fff"/></svg>
+    <span><b>اللوح المحاور</b><small>كتب المنهج العراقي تفاعلية</small></span>
+  </a>
+  <span class="sp"></span>
+  <a class="abt" href="#/about">عن اللوح</a>
+  <button class="me" id="meBtn" hidden aria-label="ملفي"><span class="stars" id="meStars"></span><span class="nm" id="meName"></span><span class="av" id="meAv"></span></button>
+</header>
+<main id="app"></main>
+<footer>
+  أسسها حسين محمد منهل، باستعمال المساعد الذكي كلاود.<br>
+  بلا إعلانات. المرحلة الابتدائية كلها مجانية بالكامل، وفي المتوسطة والإعدادية الفصل الأول من كل كتاب مجاني بالكامل. يُحفظ تقدّم الطالب على جهازه فقط.
+  · <a href="#/about">عن اللوح</a>
+  · <a id="wa" target="_blank" rel="noopener">أرسل ملاحظة</a>
+</footer>
+
+<dialog id="profile">
+  <form class="dlg" method="dialog" id="pform">
+    <h2>أهلاً بك في اللوح المحاور</h2>
+    <div style="color:var(--muted)">اكتب اسمك واختر صورتك</div>
+    <input id="pname" maxlength="20" placeholder="اسمك" autocomplete="off" required>
+    <div class="avs" id="avs"></div>
+    <div id="psubs" style="font-size:14px;color:var(--muted);margin-top:12px"></div>
+    <button class="go" id="pgo" disabled>هيا نبدأ</button>
+    <div class="bk" style="margin-top:14px;border-top:1px solid var(--line);padding-top:10px;font-size:14px">
+      <b>نسخة احتياطية لتقدّمك</b>
+      <div style="color:var(--muted)">تقدّمك محفوظ في هذا المتصفح فقط، ويضيع إذا مُسحت بيانات المتصفح أو غيّرت الهاتف. احفظ نسخة منه بين حين وآخر.</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:6px"><button type="button" class="btn" id="pexp">⬇️ احفظ نسخة</button><label class="btn" style="cursor:pointer">⬆️ استرجع نسخة<input type="file" id="pimp" accept="application/json,.json" hidden></label></div>
+      <div id="pbk" style="color:var(--muted);margin-top:4px"></div>
+    </div>
+    <button type="button" class="link" id="preset" hidden>مسح ملف الطالب من هذا الجهاز</button>
+  </form>
+</dialog>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

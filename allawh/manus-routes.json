@@ -1,0 +1,16 @@
+{
+  "routes": [
+    { "path": "/", "title": "اللوح المحاور" },
+    { "path": "/#/about", "title": "عن اللوح" },
+    { "path": "/#/primary", "title": "المرحلة الابتدائية" },
+    { "path": "/#/middle", "title": "المرحلة المتوسطة" },
+    { "path": "/#/secondary", "title": "المرحلة الإعدادية" },
+    { "path": "/#/branch/:id", "title": "فروع المرحلة" },
+    { "path": "/#/grade/:id", "title": "كتب الصف" },
+    { "path": "/#/grade/:id/:branch", "title": "كتب الفرع" },
+    { "path": "/#/coverage", "title": "تغطية الأسئلة الوزارية" },
+    { "path": "/#/coverage/:id", "title": "تغطية المادة" },
+    { "path": "/#/ready/:id", "title": "جاهزيتي للوزاري" },
+    { "path": "/#/cert", "title": "الشهادة" }
+  ]
+}
